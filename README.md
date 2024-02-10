@@ -24,5 +24,5 @@
 
 ## NOTE
 
-* Run migrations and seeder (sail artisan migrate --seed). 
+* Run migrations and seeder (sail artisan migrate --seed).
 * In a prod environment you will want to run the AclSeeder. DO NOT USE THE DEFAULT as it is a security issue (generic users created for local testing/usage).
