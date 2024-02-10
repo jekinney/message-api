@@ -21,11 +21,10 @@ Route::prefix('v1')->middleware('auth:sanctum')->group( function() {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-
-    Route::get('message/{message}', [MessageController::class, 'edit']);
+    Route::get('message/{message}', [MessageController::class, 'edit'])->middleware('can:update,message');
     Route::post('message', [MessageController::class, 'store']);
     Route::patch('message/{message}', [MessageController::class, 'update']);
-    Route::delete('message/{message}', [MessageController::class, 'destroy']);
+    Route::delete('message/{message}', [MessageController::class, 'destroy'])->withTrashed()->middleware('can:delete,message');
 
     Route::prefix('/admin')->group( function() {
         Route::get('roles', [RoleController::class, 'index']);

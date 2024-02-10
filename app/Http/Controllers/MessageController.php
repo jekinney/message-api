@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MessageCreateRequest;
+use App\Http\Requests\MessageUpdateRequest;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Resources\MessageResource;
 
 class MessageController extends Controller
 {
+    // /**
+    //  * Create the controller instance.
+    //  */
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(Message::class, 'message');
+    // }
+
     /**
      * Display a listing of the resource.
      */
@@ -44,7 +53,7 @@ class MessageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Message $message)
+    public function update(MessageUpdateRequest $request, Message $message)
     {
         return new MessageResource($message->renew($request));
     }

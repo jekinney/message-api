@@ -11,7 +11,7 @@ class MessageCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth('sanctum')->user()->hasPerm('create-messages');
     }
 
     /**

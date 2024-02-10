@@ -42,7 +42,7 @@ class AclSeeder extends Seeder
             if ( $role->slug == 'owner' ) {
                 $role->permissions()->sync( Permission::get() );
             } elseif ( $role->slug == 'member' ) {
-                $role->permissions()->sync(Permission::whereNot('is_admin')->get());
+                $role->permissions()->sync(Permission::where('is_admin', 0)->get());
             }
         }
     }

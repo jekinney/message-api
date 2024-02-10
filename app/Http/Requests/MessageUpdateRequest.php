@@ -11,7 +11,11 @@ class MessageUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = auth('sanctum')->user();
+
+        if ( $user->hasPerm('admin-update-messages') ) return true;
+
+        return ($user->hasPerm('update-messages') && $user->isAuthor($this->message));
     }
 
     /**

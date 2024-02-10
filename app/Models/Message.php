@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Requests\MessageCreateRequest;
+use App\Http\Requests\MessageUpdateRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,6 +43,33 @@ class Message extends Model
     }
 
     /**
+     * Create a new message
+     *
+     * @param  MessageCreateRequest $request
+     * @return Model
+     */
+    public function store(MessageCreateRequest $request): Model
+    {
+        return $this->create([
+            'author_id' => $request->user()->id,
+            'body' => $request->body
+        ]);
+    }
+
+    /**
+     * Update a message
+     *
+     * @param  MessageUpdateRequest $request
+     * @return Model
+     */
+    public function renew(MessageUpdateRequest $request): Model
+    {
+        $this->update(['body' => $request->body]);
+
+        return $this->fresh();
+    }
+
+    /**
      * Get a public list of messages
      *
      * @return LengthAwarePaginator
@@ -48,5 +77,21 @@ class Message extends Model
     public function publicList(): LengthAwarePaginator
     {
         return $this->paginate(10);
+    }
+
+    /**
+     * Toggle soft delete and return
+     *
+     * @return Model
+     */
+    public function toggleDelete(): Model
+    {
+        if ( $this->trashed() ) {
+            $this->restore();
+        } else {
+            $this->delete();
+        }
+
+        return $this;
     }
 }

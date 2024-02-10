@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -64,5 +65,42 @@ class User extends Authenticatable
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class, 'author_id', 'id');
+    }
+
+    /**
+     * Check a user's permissions for a specific slug
+     *
+     * @param string $slug
+     * @return boolean
+     */
+    public function hasPerm(string $slug): bool
+    {
+        return $this->permissionsList()->contains('slug', $slug);
+    }
+
+    /**
+     * Check if a user is the author of a message
+     *
+     * @param  Message $message
+     * @return boolean
+     */
+    public function isAuthor(Message $message): bool
+    {
+        return $this->id === $message->author_id;
+    }
+
+    /**
+     * Get a collection of a user's unique assigned permissions
+     *
+     * @return Collection
+     */
+    public function permissionsList(): Collection
+    {
+        $perms = $this->roles->map( function($role) {
+            return $role->permissions;
+        })->flatten()
+        ->unique();
+
+        return $perms;
     }
 }
