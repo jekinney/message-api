@@ -16,10 +16,10 @@ class MessageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'body' => $this->body,
+            'content' => $this->content,
             'author' => new UserPartialResource($this->author),
-            'is_deleted' => $this->deleted_at? true:false,
-            'created_at' => $this->created_at->format('m/d/Y H:s a')
+            'is_deleted' => $this->deleted_at ? true : false,
+            'created_at' => $this->created_at->format('m/d/Y H:s a'),
         ];
     }
 }

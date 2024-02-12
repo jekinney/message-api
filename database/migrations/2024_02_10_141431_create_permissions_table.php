@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('slug', 45)->unique();
             $table->string('display_name', 45)->unique();
             $table->string('description', 550)->nullable();
+            $table->string('role', 25)->nullable();
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });

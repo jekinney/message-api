@@ -4,18 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MessageUpdateRequest extends FormRequest
+class UpdateFavoriteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = auth('sanctum')->user();
-
-        if ( $user->hasPerm('admin-update-messages') ) return true;
-
-        return ($user->hasPerm('update-messages') && $user->isAuthor($this->message));
+        return false;
     }
 
     /**
@@ -26,7 +22,7 @@ class MessageUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => 'required|string',
+            //
         ];
     }
 }

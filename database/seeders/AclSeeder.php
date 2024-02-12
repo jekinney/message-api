@@ -18,10 +18,11 @@ class AclSeeder extends Seeder
         $acl = config('acl');
 
         // // Update or create permissions
-        foreach( $acl['permissions'] as $perm ) {
+        foreach ($acl['permissions'] as $perm) {
             Permission::updateOrCreate(
                 ['slug' => $perm['slug']],
                 [
+                    'role' => $perm['for'],
                     'is_admin' => $perm['is_admin'],
                     'description' => $perm['description'],
                     'display_name' => $perm['display_name'],
@@ -29,7 +30,7 @@ class AclSeeder extends Seeder
             );
         }
         // Update or create roles
-        foreach( $acl['roles'] as $role ) {
+        foreach ($acl['roles'] as $role) {
             $role = Role::updateOrCreate(
                 ['slug' => $role['slug']],
                 [
@@ -39,10 +40,12 @@ class AclSeeder extends Seeder
                 ]
             );
             // // Attach permissions to roles as needed
-            if ( $role->slug == 'owner' ) {
-                $role->permissions()->sync( Permission::get() );
-            } elseif ( $role->slug == 'member' ) {
-                $role->permissions()->sync(Permission::where('is_admin', 0)->get());
+            if ($role->slug == 'owner') {
+                $role->permissions()->sync(Permission::get());
+            } elseif ($role->slug == 'member') {
+                $role->permissions()->sync(Permission::where('is_admin', 0)->where('role', 'member')->get());
+            } elseif ($role->slug == 'author') {
+                $role->permissions()->sync(Permission::where('is_admin', 0)->where('role', 'author')->get());
             }
         }
     }

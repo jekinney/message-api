@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoleUpdateRequest extends FormRequest
+class StoreCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,11 +22,7 @@ class RoleUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => 'required|string|max:35|unique:roles,id',
-            'display_name' => 'required|string|max:35|unique:roles',
-            'description' => 'nullable|string|max:550',
-            'permissions' => 'nullable',
-            'permissions.*' => 'integer|exists:permissions,id'
+            //
         ];
     }
 }

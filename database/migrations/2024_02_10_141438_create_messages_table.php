@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('author_id')->references('id')->on('users');
-            $table->json('body');
+            $table->foreignId('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->mediumText('content');
+            $table->boolean('is_private')->default(false)->comment('Only followers can see a message with this flag.');
+            $table->boolean('allow_comments')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

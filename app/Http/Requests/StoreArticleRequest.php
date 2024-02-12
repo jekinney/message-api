@@ -4,14 +4,17 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MessageCreateRequest extends FormRequest
+class StoreArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth('sanctum')->user()->hasPerm('create-messages');
+        $user = auth('sanctum')->user();
+
+        return $user->hasPerms(['admin-create-articles', 'create-articles']);
+
     }
 
     /**
@@ -22,7 +25,11 @@ class MessageCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => 'required|string',
+            'slug' => 'required|string|unique:articles,slug',
+            'title' => 'required|string|unique:articles,title',
+            'content' => 'required|string',
+            'published_at' => 'nullable|date',
+            'allow_comments' => 'nullable|boolean',
         ];
     }
 }

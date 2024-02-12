@@ -19,7 +19,33 @@ class MessageFactory extends Factory
     {
         return [
             'author_id' => User::factory()->create()->id,
-            'body' => fake()->sentence(),
+            'content' => fake()->sentence(),
+            'is_private' => false,
+            'allow_comments' => true,
         ];
+    }
+
+    /**
+     * Indicate that the user is suspended.
+     */
+    public function private(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_private' => true,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is suspended.
+     */
+    public function noComments(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'allow_comments' => false,
+            ];
+        });
     }
 }

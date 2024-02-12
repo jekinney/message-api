@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class RolesTest extends TestCase
 {
@@ -36,9 +35,9 @@ class RolesTest extends TestCase
                         'slug',
                         'display_name',
                         'description',
-                        'permissions_count'
-                    ]
-                ]
+                        'permissions_count',
+                    ],
+                ],
             ]);
     }
 
@@ -66,8 +65,8 @@ class RolesTest extends TestCase
                     'display_name',
                     'description',
                     'users',
-                    'permissions'
-                ]
+                    'permissions',
+                ],
             ]);
     }
 
@@ -86,14 +85,14 @@ class RolesTest extends TestCase
         $users = User::factory(2)->create()->pluck('id')->toArray();
         $permissions = Permission::get('id')->pluck('id')->toArray();
 
-        $this->postJson("/api/v1/admin/role/", [
-                'slug' => 'test',
-                'display_name' => 'Test Role',
-                'description' => 'Test Description',
-                'users' => $users,
-                'permissions' => $permissions
+        $this->postJson('/api/v1/admin/role/', [
+            'slug' => 'test',
+            'display_name' => 'Test Role',
+            'description' => 'Test Description',
+            'users' => $users,
+            'permissions' => $permissions,
         ])->assertStatus(201)
-           ->assertJsonIsObject()
+            ->assertJsonIsObject()
             ->assertJsonStructure([
                 'data' => [
                     'id',
@@ -101,8 +100,8 @@ class RolesTest extends TestCase
                     'display_name',
                     'description',
                     'users',
-                    'permissions'
-                ]
+                    'permissions',
+                ],
             ]);
     }
 
@@ -125,13 +124,13 @@ class RolesTest extends TestCase
         $permissions = Permission::get('id')->pluck('id')->toArray();
 
         $this->patchJson("/api/v1/admin/role/{$role->id}", [
-                'slug' => 'test',
-                'display_name' => 'Test Role',
-                'description' => 'Test Description',
-                'users' => $users,
-                'permissions' => $permissions
+            'slug' => 'test',
+            'display_name' => 'Test Role',
+            'description' => 'Test Description',
+            'users' => $users,
+            'permissions' => $permissions,
         ])->assertStatus(200)
-           ->assertJsonIsObject()
+            ->assertJsonIsObject()
             ->assertJsonStructure([
                 'data' => [
                     'id',
@@ -139,8 +138,8 @@ class RolesTest extends TestCase
                     'display_name',
                     'description',
                     'users',
-                    'permissions'
-                ]
+                    'permissions',
+                ],
             ]);
     }
 
@@ -160,17 +159,17 @@ class RolesTest extends TestCase
         $permissions = Permission::get('id')->pluck('id')->toArray();
 
         $role = Role::factory()->create([
-                'slug' => 'test',
-                'display_name' => 'Test Role',
-                'description' => 'Test Description',
-            ]);
+            'slug' => 'test',
+            'display_name' => 'Test Role',
+            'description' => 'Test Description',
+        ]);
 
         $this->patchJson("/api/v1/admin/role/{$role->id}", [
-                'slug' => 'test',
-                'display_name' => 'Test Role',
-                'description' => 'Test Description',
-                'users' => $users,
-                'permissions' => $permissions
+            'slug' => 'test',
+            'display_name' => 'Test Role',
+            'description' => 'Test Description',
+            'users' => $users,
+            'permissions' => $permissions,
         ])->assertStatus(422);
     }
 }

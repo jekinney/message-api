@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Message;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class MessagePolicy
 {
@@ -21,7 +20,10 @@ class MessagePolicy
      */
     public function view(User $user, Message $message): bool
     {
-        if( $user->hasPerm('admin-access-messages') ) return true;
+        if ($user->hasPerm('admin-access-messages')) {
+            return true;
+        }
+
         return $user->hasPerm('access-messages');
     }
 
@@ -38,7 +40,10 @@ class MessagePolicy
      */
     public function update(User $user, Message $message): bool
     {
-        if( $user->hasPerm('admin-update-messages') ) return true;
+        if ($user->hasPerm('admin-update-messages')) {
+            return true;
+        }
+
         return $user->hasPerm('update-messages') && $user->isAuthor($message);
     }
 
@@ -47,24 +52,10 @@ class MessagePolicy
      */
     public function delete(User $user, Message $message): bool
     {
-        if( $user->hasPerm('admin-remove-messages') ) return true;
-        return $user->hasPerm('remove-messages') && $user->isAuthor($message);
-    }
+        if ($user->hasPerm('admin-remove-messages')) {
+            return true;
+        }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Message $message): bool
-    {
-        if( $user->hasPerm('admin-remove-messages') ) return true;
         return $user->hasPerm('remove-messages') && $user->isAuthor($message);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Message $message): bool
-    {
-        return $user->hasPerm('admin-remove-message');
     }
 }

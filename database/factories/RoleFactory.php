@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Role>
@@ -20,7 +20,7 @@ class RoleFactory extends Factory
         return [
             'slug' => Str::slug(fake()->unique()->word()),
             'description' => fake()->sentence(),
-            'display_name' => fake()->unique()->word()
+            'display_name' => fake()->unique()->word(),
         ];
     }
 }
