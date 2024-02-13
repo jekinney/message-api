@@ -3,64 +3,50 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MessageController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List of public messages
      */
-    public function index()
+    public function index(Request $request, Message $message): AnonymousResourceCollection
     {
-        //
+        return MessageResource::collection($message->adminList($request));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Data for displaying the message and all comments/replies
      */
-    public function create()
+    public function show(Message $message): MessageResource
     {
-        //
+        return new MessageResource($message->show());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Return data needed to update a message.
      */
-    public function store(Request $request)
+    public function edit(Message $message): MessageResource
     {
-        //
+        return new MessageResource($message->edit());
     }
 
     /**
-     * Display the specified resource.
+     * Update the message (patch).
      */
-    public function show(Message $message)
+    public function update(Request $request, Message $message): MessageResource
     {
-        //
+        return new MessageResource($message->renew($request));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Toggle the Message's soft deletes.
      */
-    public function edit(Message $message)
+    public function destroy(Request $request, Message $message): MessageResource
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Message $message)
-    {
-        //
+        return new MessageResource($message->destroy($request));
     }
 }

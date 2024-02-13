@@ -2,32 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMessageRequest;
-use App\Http\Requests\UpdateMessageRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MessageController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List of public messages
      */
-    public function index(Message $message): AnonymousResourceCollection
+    public function index(Request $request, Message $message): AnonymousResourceCollection
     {
-        return MessageResource::collection($message->publicList());
+        return MessageResource::collection($message->publicList($request));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMessageRequest $request, Message $message): MessageResource
+    public function store(Request $request, Message $message): MessageResource
     {
         return new MessageResource($message->store($request));
     }
 
     /**
-     * Data for displaying the message and all comments/replies.
+     * Data for displaying the message and all comments/replies
      */
     public function show(Message $message): MessageResource
     {
@@ -44,20 +43,16 @@ class MessageController extends Controller
 
     /**
      * Update the message (patch).
-     *
-     * @return MessageResource
      */
-    public function update(UpdateMessageRequest $request, Message $message)
+    public function update(Request $request, Message $message): MessageResource
     {
         return new MessageResource($message->renew($request));
     }
 
     /**
      * Toggle the Message's soft deletes.
-     *
-     * @return MessageResource
      */
-    public function destroy(Message $message)
+    public function destroy(Message $message): MessageResource
     {
         return new MessageResource($message->toggleDelete());
     }

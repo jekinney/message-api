@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MessageController;
@@ -23,16 +24,22 @@ Route::prefix('/v1')->group(function () {
         Route::get('/user/messages', [UserController::class, 'messages'])->withTrashed();
         // Message routes for members
         Route::get('message/{message}', [MessageController::class, 'edit'])->middleware('can:update,message');
-        Route::post('message', [MessageController::class, 'store']);
-        Route::patch('message/{message}', [MessageController::class, 'update']);
+        Route::post('message', [MessageController::class, 'store'])->middleware('can:store,message');
+        Route::patch('message/{message}', [MessageController::class, 'update'])->middleware('can:update,message');
         Route::delete('message/{message}', [MessageController::class, 'destroy'])->withTrashed()->middleware('can:delete,message');
         // Admin access only routes
         Route::prefix('admin')->group(function () {
+            // Messages
+            Route::get('/messages', [AdminMessageController::class, 'index'])->withTrashed()->middleware('can:viewAny,message');
+            Route::get('/message/show/{message}', [AdminMessageController::class, 'show'])->withTrashed()->middleware('can:view,message');
+            Route::get('/message/edit/{message}', [AdminMessageController::class, 'edit'])->withTrashed()->middleware('can:update,message');
+            Route::patch('/message/{message}', [AdminMessageController::class, 'update'])->withTrashed()->middleware('can:update,message');
+            Route::delete('/message/{message}', [AdminMessageController::class, 'destroy'])->withTrashed()->middleware('can:delete,message');
             // Articles
             Route::get('/articles', [AdminArticleController::class, 'index'])->withTrashed();
             Route::get('/article/edit/{article}', [AdminArticleController::class, 'edit'])->withTrashed();
             Route::get('/article/show/{article}', [AdminArticleController::class, 'show'])->withTrashed();
-            // Roles
+            // Roles No soft Deletes
             Route::get('roles', [AdminRoleController::class, 'index']);
             Route::get('role/{role}', [AdminRoleController::class, 'edit']);
             Route::post('role', [AdminRoleController::class, 'store']);
