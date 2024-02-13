@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
-use App\http\Controllers\Admin\MessageController as AdminMessageController;
+use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MessageController;
@@ -21,10 +21,10 @@ Route::prefix('/v1')->group(function () {
             return $request->user();
         });
         // User data
-        Route::get('/user/messages', [UserController::class, 'messages'])->withTrashed();
+        Route::get('/user/messages', [UserController::class, 'messages'])->withTrashed()->middleware('can:view,message');
         // Message routes for members
         Route::get('message/{message}', [MessageController::class, 'edit'])->middleware('can:update,message');
-        Route::post('message', [MessageController::class, 'store'])->middleware('can:store,message');
+        Route::post('message', [MessageController::class, 'store'])->middleware('can:create,message');
         Route::patch('message/{message}', [MessageController::class, 'update'])->middleware('can:update,message');
         Route::delete('message/{message}', [MessageController::class, 'destroy'])->withTrashed()->middleware('can:delete,message');
         // Admin access only routes

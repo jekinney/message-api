@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreArticleRequest;
-use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ArticleResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @param  Request $request
+     * @param  Article $article
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request, Article $article)
+    public function index(Request $request, Article $article): AnonymousResourceCollection
     {
         return ArticleResource::collection($article->adminList($request));
     }
@@ -21,7 +25,7 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreArticleRequest $request, Article $article): ArticleResource
+    public function store(Request $request, Article $article): ArticleResource
     {
         return new ArticleResource($article->store($request));
     }
@@ -29,7 +33,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show(Article $article): ArticleResource
     {
         return new ArticleResource($article->show());
     }
@@ -37,7 +41,7 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $article)
+    public function edit(Article $article): ArticleResource
     {
         return new ArticleResource($article->edit());
     }
@@ -45,16 +49,25 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Article $article): ArticleResource
     {
-        //
+        return new ArticleResource($article->renew($request));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove an article. Might soft delete or remove permanently.
+     *
+     * @param  Request $request
+     * @param  Article $article
+     * @return boolean|ArticleResource
      */
-    public function destroy(Article $article)
+    public function destroy(Request $request, Article $article): bool|ArticleResource
     {
-        //
+        // Might return bool or model
+        $article = $article->remove($request);
+        if(is_bool($article)) {
+            return response()->json($article);
+        }
+        return new ArticleResource($article);
     }
 }

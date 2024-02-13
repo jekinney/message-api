@@ -10,7 +10,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class Roles extends EloquentQueries
 {
     /**
-     * Gather data to edit a role
+     * Data to edit a role
+     *
+     * @return Model
      */
     public function edit(): Model
     {
@@ -18,7 +20,9 @@ class Roles extends EloquentQueries
     }
 
     /**
-     * Gather data to display a role
+     * Data to display a role
+     *
+     * @return Model
      */
     public function show(): Model
     {
@@ -26,7 +30,10 @@ class Roles extends EloquentQueries
     }
 
     /**
-     * Create a new role resource
+     * Store a new role
+     *
+     * @param  Request $request
+     * @return Model
      */
     public function store(Request $request): Model
     {
@@ -44,7 +51,10 @@ class Roles extends EloquentQueries
     }
 
     /**
-     * Update a role resource
+     * Update a role
+     *
+     * @param  Request $request
+     * @return Model
      */
     public function renew(Request $request): Model
     {
@@ -62,8 +72,23 @@ class Roles extends EloquentQueries
     }
 
     /**
-     * A paginated list for admin users.
-     * Includes all roles
+     * Attempt to remove a role after we
+     * need to detach relationships
+     *
+     * @return boolean
+     */
+    public function remove(): bool
+    {
+        $this->users()->detach();
+        $this->permissions()->detach();
+        return $this->delete();
+    }
+
+    /**
+     * Paginated list for Admins
+     *
+     * @param  Request $request
+     * @return LengthAwarePaginator
      */
     public function adminList(Request $request): LengthAwarePaginator
     {
@@ -75,6 +100,8 @@ class Roles extends EloquentQueries
     /**
      * Getter to set up validation
      * rules to store new resource
+     *
+     * @return array
      */
     protected function getStoreRules(): array
     {
@@ -92,6 +119,8 @@ class Roles extends EloquentQueries
     /**
      * Getter to set up validation
      * rules to renew a resource
+     *
+     * @return array
      */
     protected function getRenewRules(): array
     {

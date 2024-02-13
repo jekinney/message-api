@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Queries\Articles;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class Article extends Model
+class Article extends Articles
 {
     use HasFactory, SoftDeletes;
 
@@ -31,7 +32,16 @@ class Article extends Model
     protected $guarded = ['id'];
 
     /**
-     * Relationship to the Like Model
+     * Eager load a count of relationships
+     *
+     * @var array
+     */
+    protected $withCount= ['likes'];
+
+    /**
+     * Relationship to Like Model
+     *
+     * @return HasMany
      */
     public function likes(): HasMany
     {
@@ -40,6 +50,8 @@ class Article extends Model
 
     /**
      * Relationship to User Model
+     *
+     * @return BelongsTo
      */
     public function author(): BelongsTo
     {
@@ -49,6 +61,8 @@ class Article extends Model
 
     /**
      * Relationship to Image Model
+     *
+     * @return MorphMany
      */
     public function images(): MorphMany
     {
@@ -57,6 +71,8 @@ class Article extends Model
 
     /**
      * Relationship to the Comment Model
+     *
+     * @return MorphMany
      */
     public function comments(): MorphMany
     {
@@ -65,45 +81,11 @@ class Article extends Model
 
     /**
      * Relationship to Favorite Model
+     *
+     * @return HasMany
      */
     public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
-    }
-
-    /**
-     * Get data to show an article
-     */
-    public function show(): Model
-    {
-        return $this->load('comments');
-    }
-
-    /**
-     * Get data to edit an article
-     */
-    public function edit(): Model
-    {
-        return $this->loadCount('comments');
-    }
-
-    /**
-     * Get a list of all articles even
-     * deleted and un-published
-     */
-    public function adminList(Request $request): LengthAwarePaginator
-    {
-        return $this->withTrashed()->paginate($request->amount ?? 10);
-    }
-
-    /**
-     * Get a list of published articles for
-     * all users and guests to read
-     */
-    public function publicList(Request $request): LengthAwarePaginator
-    {
-        return $this->withCount('comments')
-            ->where('published_at', '<', Carbon::now())
-            ->paginate($request->amount ?? 10);
     }
 }

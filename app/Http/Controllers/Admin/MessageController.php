@@ -11,7 +11,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class MessageController extends Controller
 {
     /**
-     * List of public messages
+     * Admin list of messages
+     *
+     * @param  Request $request
+     * @param  Message $message
+     * @return AnonymousResourceCollection
      */
     public function index(Request $request, Message $message): AnonymousResourceCollection
     {
@@ -19,7 +23,10 @@ class MessageController extends Controller
     }
 
     /**
-     * Data for displaying the message and all comments/replies
+     * Return message for displaying
+     *
+     * @param  Message $message
+     * @return MessageResource
      */
     public function show(Message $message): MessageResource
     {
@@ -27,7 +34,10 @@ class MessageController extends Controller
     }
 
     /**
-     * Return data needed to update a message.
+     * Return message to edit
+     *
+     * @param  Message $message
+     * @return MessageResource
      */
     public function edit(Message $message): MessageResource
     {
@@ -35,7 +45,11 @@ class MessageController extends Controller
     }
 
     /**
-     * Update the message (patch).
+     * Admin update a message
+     *
+     * @param  Request $request
+     * @param  Message $message
+     * @return MessageResource
      */
     public function update(Request $request, Message $message): MessageResource
     {
@@ -43,10 +57,14 @@ class MessageController extends Controller
     }
 
     /**
-     * Toggle the Message's soft deletes.
+     * Remove a message
+     *
+     * @param  Request $request
+     * @param  Message $message
+     * @return MessageResource
      */
     public function destroy(Request $request, Message $message): MessageResource
     {
-        return new MessageResource($message->destroy($request));
+        return new MessageResource($message->remove($request));
     }
 }

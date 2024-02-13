@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -13,7 +11,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class RoleController extends Controller
 {
     /**
-     * Undocumented function
+     * Admin list of Roles
+     *
+     * @param Request $request
+     * @param Role $role
+     * @return AnonymousResourceCollection
      */
     public function index(Request $request, Role $role): AnonymousResourceCollection
     {
@@ -21,15 +23,22 @@ class RoleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new role
+     *
+     * @param  Request $request
+     * @param  Role $role
+     * @return RoleResource
      */
-    public function store(StoreRoleRequest $request, Role $role): RoleResource
+    public function store(Request $request, Role $role): RoleResource
     {
         return new RoleResource($role->store($request));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Role data to display
+     *
+     * @param  Role $role
+     * @return RoleResource
      */
     public function show(Role $role): RoleResource
     {
@@ -37,7 +46,10 @@ class RoleController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Role data to edit a role
+     *
+     * @param  Role $role
+     * @return RoleResource
      */
     public function edit(Role $role): RoleResource
     {
@@ -45,15 +57,22 @@ class RoleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a role
+     *
+     * @param  Request $request
+     * @param  Role $role
+     * @return RoleResource
      */
-    public function update(UpdateRoleRequest $request, Role $role): RoleResource
+    public function update(Request $request, Role $role): RoleResource
     {
         return new RoleResource($role->renew($request));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Attempt to remove a role
+     *
+     * @param Role $role
+     * @return RoleResource
      */
     public function destroy(Role $role): RoleResource
     {

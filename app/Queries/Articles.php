@@ -2,12 +2,13 @@
 
 namespace App\Queries;
 
-use App\Queries\Contracts\EloquentQueries;
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use App\Queries\Contracts\EloquentQueries;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class Messages extends EloquentQueries
+class Articles extends EloquentQueries
 {
     /**
      * Data to display a message
@@ -27,17 +28,9 @@ class Messages extends EloquentQueries
      */
     public function store(Request $request): Model
     {
-        $role = $this->create($this->validate($request));
+        $article = $this->create($this->validate($request));
 
-        if ($request->permissions && ! empty($request->permissions)) {
-            $role->permissions()->attach($request->permissions);
-        }
-
-        if ($request->users && ! empty($request->users)) {
-            $role->users()->attach($request->users);
-        }
-
-        return $role->load('comments', 'comments.replies');
+        return $article->load('comments', 'comments.replies');
     }
 
     /**
@@ -50,20 +43,12 @@ class Messages extends EloquentQueries
     {
         $this->update($this->validate($request));
 
-        if ($request->permissions && ! empty($request->permissions)) {
-            $this->permissions()->sync($request->permissions);
-        }
-
-        if ($request->users && ! empty($request->users)) {
-            $this->users()->sync($request->users);
-        }
-
         return $this->fresh()->load('comments', 'comments.replies');
     }
 
     /**
      * A paginated list for admin users.
-     * Includes all roles
+     * Includes all articles
      *
      * @param  Request $request
      * @return LengthAwarePaginator
@@ -71,7 +56,8 @@ class Messages extends EloquentQueries
     public function adminList(Request $request): LengthAwarePaginator
     {
         return $this->withCount('comments', 'comments.replies')
-            ->latest()
+            ->where('published_at', '<', Carbon::now())
+            ->latest('published_at')
             ->paginate($this->amount($request));
     }
 
@@ -115,7 +101,11 @@ class Messages extends EloquentQueries
     protected function getStoreRules(): array
     {
         return [
+            'slug' => 'required|string|unique:articles,slug',
+            'title' => 'required|string|unique:articles,title',
             'content' => 'required|string',
+            'published_at' => 'nullable|date',
+            'allow_comments' => 'nullable|boolean',
         ];
     }
 
@@ -128,7 +118,11 @@ class Messages extends EloquentQueries
     protected function getRenewRules(): array
     {
         return [
+            'slug' => 'required|string|unique:articles,slug,id,'.$this->id,
+            'title' => 'required|string|unique:articles,title,id,'.$this->id,
             'content' => 'required|string',
+            'published_at' => 'nullable|date',
+            'allow_comments' => 'nullable|boolean',
         ];
     }
 }

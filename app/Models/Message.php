@@ -32,6 +32,13 @@ class Message extends Messages
     protected $guarded = ['id'];
 
     /**
+     * Eager load relations count(s)
+     *
+     * @var array
+     */
+    protected $withCount = ['likes', 'favorites'];
+
+    /**
      * Relationship to the Like Model
      */
     public function likes(): MorphMany

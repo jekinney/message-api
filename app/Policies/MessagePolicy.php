@@ -12,7 +12,7 @@ class MessagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPerm('admin-access-messages');
     }
 
     /**
@@ -32,6 +32,8 @@ class MessagePolicy
      */
     public function create(User $user): bool
     {
+        dd($user->hasPerm('create-messages'));
+
         return $user->hasPerm('create-messages');
     }
 

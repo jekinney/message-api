@@ -158,7 +158,7 @@ class MessageTest extends TestCase
             'content' => 'Test Message',
         ]);
 
-        $this->getJson("/api/v1/message/{$message->id}", [
+        $this->getJson("/api/v1/admin/message/{$message->id}", [
             'content' => 'Updated Test Message',
         ])->assertStatus(200);
 
